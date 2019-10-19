@@ -1,0 +1,98 @@
+
+<script src="../tinytest.js"></script>
+<script>
+// Prototype implementation.
+    
+// Function signature: (how we want the product to work)
+// arr.find(callback(element[, index[, array]])[, thisArg]) 
+
+
+
+// Function signature:
+// find( array, callback [,optionalThis])
+
+
+/* callback parameter
+Function to execute on each value in the array, taking 3 arguments:
+element
+The current element in the array.
+index Optional
+The index (position) of the current element in the array.
+array Optional
+The array that find was called on.
+thisArg Optional
+Object to use as this inside callback.
+Return valueSection
+The value of the first element in the array that satisfies the provided testing function. 
+Otherwise, undefined is returned.
+
+*/
+
+function findIndex (array, callback, optionalThis) {
+    var findICallback = callback;
+
+    if (optionalThis) {
+        findICallback = findICallback.bind(optionalThis);
+    }
+    for ( var i = 0; i < array.length; i ++) {
+       if (findICallback(array[i],i, array)) {
+        return i;
+       } 
+       
+       }
+        return -1;
+    }
+
+tests({
+  'It should run the callback function array.length times .': function() {
+        var numberOfTimesCallbackHasRun = 0;
+        findIndex ([1,2], function () {
+            numberOfTimesCallbackHasRun++;
+        }); 
+        eq(numberOfTimesCallbackHasRun, 2);
+    },
+  'It should pass in the ith element as the first argument to the callback.': function() {
+    findIndex([1], function (number) { 
+      eq([1], number);
+    }); 
+    },
+  'It should pass in ith position as the second argument to the callback.': function() { 
+    findIndex([1], function (number, index) { 
+      eq(0, index);
+    }); 
+    }, 
+  'It should pass in the originalArray as the third argument to the callback.': function() {
+    var testArray = [1,2,3];
+    findIndex(testArray, function (number, index, originalArray) { 
+     eq(originalArray, testArray);
+  }); 
+  },
+  'It should accept an optional this object': function () {
+    findIndex ([1], function () {
+        //inside of here, this should be equal to the configurableThisObject
+        //this.description should be equal to 'configurable this object'.
+        eq(this.description, 'I should be accessible inside of the callback');
+    }, {description: 'I should be accessible inside of the callback'});
+    },
+  'It should return the index of first element of array to return a true value on callback.': function() {
+      var array = [1, 5];
+      var firstTrueIndex = findIndex(array, function(num){
+        return num === 1;
+      });
+      eq(firstTrueIndex, 0);
+  },
+  'It should return -1 if no elements in the array satisfy the callback.': function () {
+    var result = findIndex([1,2], function (number) {
+       return number > 4;
+    })
+    eq(result, -1);
+  },
+  'It should run the callback on holes.': function() {
+      var numberOfTimesCallbackHasRun = 0;
+        findIndex ([,1,2], function () {
+            numberOfTimesCallbackHasRun++;
+        }); 
+        eq(numberOfTimesCallbackHasRun, 3);
+  }
+});
+</script>

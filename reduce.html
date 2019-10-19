@@ -1,0 +1,164 @@
+
+<script src="../tinytest.js"></script>
+<script>
+// Prototype implementation.
+    // function reduce (array, callback, startingValue) {
+    //     var resultsSoFar = startingValue;
+    //     for (var i = 0; i < array.length; i++) {
+    //         resultsSoFar = callback( resultsSoFar, array[i], i, array);
+    //     }
+    //     return resultsSoFar;
+    // }
+
+// Function signature: (how we want the product to work)
+    // reduce(array, callback [, initialValue])  
+
+// Callback parameters: 
+    // previous value   (resultSoFar)
+    // currentValue     (array[i])
+    // currentIndex     (i)
+    // array            (array)
+
+// Return Value:
+    // Returns a single value 
+
+    //Notes: Object.keys([,,,,]).length === 0
+function reduce(array, callback, initialValue) {
+    var startingIndex = 0;
+    var resultsSoFar = initialValue;
+    var length = array.length
+    var arrayIndexes = Object.keys(array);
+
+    //detects if no initialValue 
+    if ( arguments.length < 3) {
+       if (arrayIndexes.length === 0) {
+            throw new TypeError('Reduce of empty array with no initial value');
+        }
+       //if array has one element, just return it (one element).
+       if (arrayIndexes.length === 1) {
+          var onlyIndex = arrayIndexes[0];
+          var onlyElement = array[onlyIndex];
+          return onlyElement;
+        }
+        // we want to skip holes at the beginning of the array.
+
+    while ( startingIndex in array === false && startingIndex < length)  {
+        startingIndex++;
+    }
+
+        resultsSoFar = array[startingIndex];
+        startingIndex++;
+
+
+     //has initialValue 
+    } else {
+        if (arrayIndexes.length === 0) {
+                return initialValue;
+        }
+    }
+    for (var i = startingIndex; i < length; i++){
+       if (i in array) 
+        resultsSoFar = callback(resultsSoFar, array[i], i, array);
+    }
+    return resultsSoFar;
+}
+
+tests({
+    'If initialValue, callback should run array.length times.': function() {
+        var numberOfTimesCallbackHasRun = 0;
+        reduce([1], function() {
+            numberOfTimesCallbackHasRun++;
+        }, 0);
+        eq(numberOfTimesCallbackHasRun, 1);
+    },
+    'If no initialValue, callback should run array.length -1 times. ': function() {
+        var numberOfTimesCallbackHasRun = 0;
+        reduce([1], function() {
+            numberOfTimesCallbackHasRun++;
+        }, );
+        eq(numberOfTimesCallbackHasRun, 0);
+    },
+
+    'If initialValue, previousValue should start with initialValue': function() {
+        reduce([1],function(previousValue) {
+            eq(previousValue, 0);
+        },0);
+    },
+    'If initialValue, currentValue should start with  array[0]': function() {
+        reduce([1],function(previousValue, currentValue) {
+            eq(currentValue, 1);
+        },0);
+    },
+    'If initialValue, callback will start at index 0.': function() {
+        reduce([1],function(previousValue, currentValue, currentIndex) {
+            eq(currentIndex, 0);
+        },0);
+    },
+    'If no initialValue, previousValue should start with array[0].': function() {
+        reduce([1, 2],function(previousValue) {
+            eq(previousValue, 1);
+        });
+    },
+    'If no initialValue, currentValue should start with  array[1].': function() {
+        reduce([1, 2],function(previousValue, currentValue) {
+            eq(currentValue, 2);
+        });
+    },
+    'If no initialValue, callback will start at index 1. ': function() {
+        reduce([1, 2],function(previousValue, currentValue, currentIndex) {
+            eq(currentIndex, 1);
+        });
+    },
+    'If initialValue, and array is empty, return initialValue without calling callback': function() {
+        var numberOfTimesCallbackHasRun = 0;
+        var initialValue = 0;
+        var reduceResult= reduce([,,],function() {
+            numberOfTimesCallbackHasRun++;
+        }, 0);
+        eq(reduceResult, initialValue);
+        eq(numberOfTimesCallbackHasRun, 0);
+
+    },
+    'If no initialValue, and array has one element, it should return that element without calling callback': function() {
+        var numberOfTimesCallbackHasRun = 0;
+        var reduceResult = reduce([1],function() {
+           numberOfTimesCallbackHasRun++;
+        });
+        eq(reduceResult, 1);
+        eq(numberOfTimesCallbackHasRun, 0);
+    },
+    'It should actually reduce. ': function() {
+       var sum =  reduce([1,2,3], function(a,b) {
+            return a + b;
+        }, 0);
+        eq(sum, 6);
+    },
+    'If initialValue, it should exclude holes.': function() {
+        var sum =  reduce([,1,2,,3,], function(a,b) {
+            return a + b;
+        }, 0);
+        eq(sum, 6);
+    },
+    'If NO initialValue, it should exclude holes.': function() {
+        var sum =  reduce([,1,2,,3,], function(a,b) {
+            return a + b;
+        });
+        eq(sum, 6);
+    },
+    'If array is empty, and no initialValue, throw TypeError.': function() {
+       var isTypeError = false; 
+       try{ 
+          reduce([], function(){});
+        } catch(e){
+        var isTypeError = (e instanceof TypeError);
+        } 
+       eq(isTypeError, true);
+    },
+    'It should pass array as fourth argument to callback. ': function() {
+        var testArray = [1,2];
+        reduce(testArray,function(previousValue, currentValue, currentIndex, arrayToReduce) {
+            eq(arrayToReduce, testArray);
+        },);
+    }
+});
+</script>

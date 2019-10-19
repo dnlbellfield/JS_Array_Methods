@@ -1,0 +1,126 @@
+
+<script src="../tinytest.js"></script>
+<script>
+// Prototype implementation.
+/* 
+
+The every() method tests whether all elements in the array pass the test implemented by the provided function. It returns a Boolean value. 
+Syntax
+
+
+arr.every(callback(element[, index[, array]])[, thisArg])
+*/
+
+
+/* callback parameter
+
+callback
+A function to test for each element, taking three arguments:
+element
+The current element being processed in the array.
+indexOptional
+The index of the current element being processed in the array.
+arrayOptional
+The array every was called upon.
+thisArgOptional
+A value to use as this when executing callback.
+Return value
+true if the callback function returns a truthy value for every array element. Otherwise, false.
+*/
+
+function every (array, callback, optionalThis ) {
+var boundCallback = callback;
+var length = array.length;
+if (optionalThis) {
+boundCallback = callback.bind(optionalThis);
+
+}
+
+  for (var i = 0; i < length; i++) {
+    if (i in array) {
+      if (boundCallback(array[i],i, array) ===false) {
+            return false;
+      }
+    }
+  }
+
+  return true;
+}
+
+tests({
+
+  'It should run the callback function array.length times .': function() {
+        var numberOfTimesCallbackHasRun = 0;
+        every ([1,2], function () {
+            numberOfTimesCallbackHasRun++;
+        }); 
+        eq(numberOfTimesCallbackHasRun, 2);
+    },
+
+  'It should pass in the ith element as the first argument to the callback.': function() {
+    every([1], function (number) { 
+      eq([1], number);
+    }); 
+    },
+  'It should pass in ith position as the second argument to the callback.': function() { 
+    every([1], function (number, index) { 
+      eq(0, index);
+    });
+    }, 
+  'It should pass in the originalArray as the third argument to the callback.': function() {
+    var testArray = [1,2,3];
+    every(testArray, function (number, index, originalArray) { 
+     eq(originalArray, testArray);
+  });
+  },
+'It should accept an optional this object.': function() {
+   every ([0], function () {
+        //inside of here, this should be equal to the configurableThisObject
+        //this.description should be equal to 'configurable this object'.
+        eq(this.description, 'I should be accessible inside of the callback');
+    }, {description: 'I should be accessible inside of the callback'});
+  
+  },
+'It should return true if the callback function returns a truthy value for every array element.': function() {
+  var result = every ([2,5,10,100], function (number) {
+        return number > 1;
+  
+    });
+  eq(result, true);
+  
+  },
+'It should return false if any element does not pass test in callback function.': function() {
+  var result = every([0,5,10,100], function (number) {
+        return number < 9;
+  
+    });
+  eq(result, false);
+  
+},
+'It should return true for an empty arr, it returns true. .': function() {
+  var result = every ([], function (number) {
+        return number < 0 ;
+  
+    });
+  eq(result, true);
+  
+},
+'callback will not run on elements that are appended to the array after the call to every begins.' : function () {
+  
+  var numberOfTimesCallbackHasRun = 0;
+  every ([1,2,3], function (currentValue, index, array) {
+        numberOfTimesCallbackHasRun++;
+        array.push(5);
+        return currentValue < 4 ;
+          
+       
+  
+    });
+
+  eq(numberOfTimesCallbackHasRun, 3);
+  
+
+}
+
+});
+</script>
