@@ -1,6 +1,7 @@
 # JS_Array_Methods
 
-we will use tinytest or simpletest to test out code.
+We will use tinytest or simpletest to test out code.
+
 Tiniest JavaScript unit testing library
 This is an in-browser JavaScript library I've been using for years. It's so small and simple that it never occured to me to open source it until I saw all the overly complicated alternatives that are out there.
 
@@ -80,6 +81,7 @@ Follow the same process that we followed in the testing series for these array m
 Verify your answers by comparing the behavior of your code against the native equivalents. After verifying, compare your code against solutions from other students.
 
 Finally, before you continue, post your code as well so that others can learn from your approach.
+
 
 
 Array.prototype.find
