@@ -37,6 +37,8 @@
  * -Joe Walnes
  * MIT License. See https://github.com/joewalnes/jstinytest/
  */
+//please use simple test
+
 var TinyTest = {
 
     run: function(tests) {
