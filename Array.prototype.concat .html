@@ -28,19 +28,28 @@ function concat () {
 
 	var result = [];
 	if (arguments.length === 0){
-		throw new TypeError("you need a value");
+		throw new TypeError("you need to pass an argument");
 	}
-	for (var i = 0; i < arguments.length;  i++){
+	//If an object has no primitive value, valueOf returns the object itself.
+	//Object.prototype.valueOf.call
+    if (arguments[0] instanceof Object === false) {
+      arguments[0] = Object.prototype.valueOf.call(arguments[0]);
+    }
 
-			currentArgument = arguments[i];
+	for (var i = 0; i < arguments.length;  i++){
+		if (Array.isArray(arguments[i])) {
+
+		currentArgument = arguments[i];
 
 			  for ( var j = 0; j < currentArgument.length; j ++){
 				
 				result.push(currentArgument[j]);
 			
 		  } 
+     	} else {
+     		result.push(arguments[i]);
      	}
-
+     	}
 		return result;
 	}
 	
@@ -53,19 +62,32 @@ tests({
 		eq(Array.isArray(concatResult), true);
 
 	},
+
 	'It should return a new array.': function(){
-		  var originalArray = [1, 2, 3];
-      var concatArray = concat(originalArray);
-      eq(concatArray !== originalArray, true);
+		var originalArray = [1, 2, 3];
+      	var concatArray = concat(originalArray);
+      	eq(concatArray !== originalArray, true);
 
 	},
+
 	'It should throw a typeError if no arguments passed.': function(){
 		 try {
-        concat();
-      } catch (e) {
-        var isTypeError = e instanceof TypeError;
-      }
-      eq(isTypeError, true);
+        	concat();
+      	} catch (e) {
+        	var isTypeError = e instanceof TypeError;
+      	}
+      	eq(isTypeError, true);
+	},
+
+	'It should create a new array consisting of the the argument itself (if the argument is not an array).': function(){
+		var myOnlyArgument = 12;
+		var concatResult = concat(myOnlyArgument);
+		eq(concatResult, myOnlyArgument);
+	},
+
+	'It should not recurse into nested array arguments.': function(){
+		var concated = concat([["my length should be one"]]);
+    	eq(concated.length, 1);
 	}
 
 });	
