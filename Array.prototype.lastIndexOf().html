@@ -1,0 +1,98 @@
+<script src="../simpletest.js"></script>
+<script>
+//for a couple tests
+var smallArray = [1,2,3];
+
+function lastIndexOf (array, searchElement, fromIndex) {
+ 	
+ 	// must pass array as the first argument into our indexOf function
+ 	// throw TypeError 
+ 	if (arguments.length === 0){
+ 		throw  ReferenceError ("Please pass an Array as the first argument")
+ 	}
+ 	if(Array.isArray(array) === false ){
+ 		throw new TypeError ("This is not an array. Please pass an Array as the first argument")
+ 	}
+ 	var lastIndex = array.length - 1;  
+
+ 	if (arguments.length < 2) {
+ 		return -1;
+ 	}
+
+ 	if (fromIndex){
+ 		if (fromIndex < 0) {
+ 			lastIndex = fromIndex + 1; 
+ 		} else {
+ 			lastIndex = fromIndex;
+ 		}
+ 	}
+ 	
+	
+	for ( var i = lastIndex; i >= 0; i--){
+		if (array[i] === searchElement) {
+				return i;
+		} 
+			
+		}
+		return -1;
+	}
+
+
+
+tests({
+
+    'It should return the last index at which a given element can be found in the array': function(){
+    	 result = lastIndexOf(['a','b','c','a'], 'a');
+		eq( result, 3);
+    },
+
+    'If empty array, it should return -1': function() {
+    	var result = lastIndexOf([]);
+    	eq(result, -1);
+    },
+
+    'If no array, it should throw a Error': function() {
+      	try {
+      		lastIndexOf();
+    	} catch(error) {
+  			var result = error.message;
+			eq(result , "Please pass an Array as the first argument");
+	}
+	
+    },
+    'If the first argument is not an array, it should throw a Error': function() {
+    	var imTruthy = true;
+    	try {
+    		lastIndexOf(imTruthy);
+    	} catch(error) {
+ 
+  		eq(error.message, "This is not an array. Please pass an Array as the first argument");
+  		}
+	},
+	'If the index is greater than or equal to the arrays length, -1 is returned.' : function() {
+		result = lastIndexOf(smallArray, 4);
+		eq( result, -1);
+	},
+	'If searchElement is not found in the array return -1 .': function(){
+		result = lastIndexOf([1,2], "a");
+		eq( result, -1);
+	},
+	'If the provided index is 0, then the whole array will be searched. ': function(){
+		result = lastIndexOf([1,2,3], 3, 0);
+		eq( result, 2);
+	},
+	'Even when the index is negative, the array is still searched from back to front. ': function(){
+		var array = ['a','b', 'c', 'd'];
+     	var result = lastIndexOf(array, 'a', -1);
+      	eq(result, 0);
+	},
+	'The search should be able to start optional fromIndex.': function() {
+        var array = ['a','b', 'c', 'd'];
+     	var resultIndex = lastIndexOf(array, 'a', 2);
+      	eq(resultIndex, 0);
+    }
+   
+  });
+
+
+</script>
