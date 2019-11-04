@@ -1,0 +1,100 @@
+<script src="../simpletest.js"></script>
+<script>
+//for a couple tests
+var smallArray = [1,2,3];
+
+function indexOf (array, searchElement, fromIndex) {
+ 	
+ 	// must pass array as the first argument into our indexOf function
+ 	// throw TypeError 
+ 	if (arguments.length === 0){
+ 		throw  ReferenceError ("Please pass an Array as the first argument")
+ 	}
+ 	if(Array.isArray(array) === false ){
+ 		throw new TypeError ("This is not an array. Please pass an Array as the first argument")
+ 	}
+
+
+ 	// if no from index, starting index will be 0
+ 	if (!fromIndex){
+ 		startingIndex = 0; 
+ 	// if fromIndex exists and >=0, startingIndex will be set to fromIndex
+ 	} else if (fromIndex >= 0) {
+ 		startingIndex = fromIndex;
+ 	// if fromIndex is not >= 0, LESS THAN 0, a negative number 
+ 	//offset by adding array.length + fromIndex;
+ 	} else {
+		startingIndex = array.length + fromIndex; 
+ 	}
+	
+
+
+	
+	for ( var i = startingIndex; i < array.length; i++){
+		if (array[i] === searchElement) {
+				return i;
+		} 
+			
+		}
+		return -1;
+	}
+
+
+
+tests({
+
+    'It should return the first index at which a given element can be found in the array': function(){
+    	 result = indexOf(['a','b','c'], 'a', 0);
+		eq( result, 0);
+    },
+
+    'If empty array, it should return -1': function() {
+    	var result = indexOf([]);
+    	eq(result, -1);
+    },
+
+    'If no array, it should throw a Error': function() {
+      	try {
+      		indexOf();
+    	} catch(error) {
+  			var result = error.message;
+			eq(result , "Please pass an Array as the first argument");
+	}
+	
+    },
+    'If the first argument is not an array, it should throw a Error': function() {
+    	var imTruthy = true;
+    	try {
+    		indexOf(imTruthy);
+    	} catch(error) {
+ 
+  		eq(error.message, "This is not an array. Please pass an Array as the first argument");
+  		}
+	},
+	'If the index is greater than or equal to the arrays length, -1 is returned.' : function() {
+		result = indexOf(smallArray, 4);
+		eq( result, -1);
+	},
+	'If searchElement is not found in the array return -1 .': function(){
+		result = indexOf([1,2], "a");
+		eq( result, -1);
+	},
+	'If the provided index is 0, then the whole array will be searched. ': function(){
+		result = indexOf([1,2,3], 3, 0);
+		eq( result, 2);
+	},
+	'if the provided index is negative, the array is still searched from front to back.': function(){
+		var array = ['a','b', 'c', 'd'];
+     	var index = indexOf(array, 'c', -2);
+      	eq(index, 2);
+	},
+	'The search should be able to start optional fromIndex.': function() {
+        var array = ['a','b', 'c', 'd'];
+     	var index = indexOf(array, 'c', 2);
+      	eq(index, 2);
+    }
+   
+  });
+
+
+</script>
