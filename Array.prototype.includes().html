@@ -1,0 +1,78 @@
+<script src="../simpletest.js"></script>
+<script>
+	var arrayAZ = ['a','b','c','d'];
+	function includes(array, valueToFind, fromIndex) {
+
+		index = 0;
+		if (fromIndex) {
+			if (fromIndex < 0) {
+				index = array.length + fromIndex;
+			} else {
+				index = fromIndex;
+			}
+		}
+
+		if(Array.isArray(array) === false ){
+ 		throw new TypeError ("pass an array")
+ 		}
+
+		if( arguments.length < 2) {
+			return false;
+		}
+	
+
+		for (var i = index; i < array.length; i++){
+			if ( array[i] === valueToFind   ){
+				return true;
+			} 
+		
+		}
+			return false;
+	}
+
+tests({
+	'It should return true if valueToFind is found within the array': function(){
+			result = arrayAZ.includes('a');
+			eq(result, true);
+	},
+
+	'It should return false if valueToFind is not found within the array': function(){
+			result = arrayAZ.includes('4');
+			eq(result, false);
+	},
+
+	'If fromIndex is greater than or equal to the length of the array, false is returned. The array will not be searched.': function(){
+			var arrayAZ = ['a','b','c','d'];
+			result = arrayAZ.includes('a', 5);
+			eq(result, false);
+	},
+
+	'If fromIndex is a negative number, searched index is equal to array.length + fromIndex .': function() {
+			var arrayAZ = ['a','b','c','d'];
+			result = arrayAZ.includes('d',-1);
+			eq(result, true);
+	},
+
+	'If fromIndex is not provided, it should start at index 0.': function () {
+  		var result = includes([1, 2, 3], 1);
+  		eq(result, true);
+	},
+	
+	'If arguments.length is less than 2, return false': function() {
+		result = includes(arrayAZ);
+		eq(result, false);
+	},
+
+	'It should throw an error if the first argument is not an array': function() {
+		try {
+			includes();
+		} catch (e) {
+			result = e.message;
+		}
+		eq(result,"pass an array" ); 
+	}
+	
+});
+
+
+</script>
