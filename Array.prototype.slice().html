@@ -1,0 +1,156 @@
+<script src="../simpletest.js"></script>
+<script type="text/javascript">
+// Docs:
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice
+// Specs:
+  // https://tc39.es/ecma262/#sec-array.prototype.slice
+// Description:
+  // The slice() method returns a shallow copy of a portion of an array into a new array object selected from begin to end (end not included) where begin and end represent the index of items in that array. The original array will not be modified.
+// The Steps
+  // 1 write requirements based on docs
+  // 2 write description for test
+  // 3 write test to fail
+  // 4 write code to make the test pass
+  // 5 repeat
+// Function Signature:
+  // arr.slice([begin[, end]])
+// Parameters:
+  
+/*begin Optional
+Zero-based index at which to begin extraction.
+A negative index can be used, indicating an offset from the end of the sequence. slice(-2) extracts the last two elements in the sequence.
+If begin is undefined, slice begins from index 0.
+If begin is greater than the length of the sequence, an empty array is returned.
+end Optional
+Zero-based index before which to end extraction. slice extracts up to but not including end.
+For example, slice(1,4) extracts the second element through the fourth element (elements indexed 1, 2, and 3).
+A negative index can be used, indicating an offset from the end of the sequence. slice(2,-1) extracts the third element through the second-to-last element in the sequence.
+If end is omitted, slice extracts through the end of the sequence (arr.length).
+If end is greater than the length of the sequence, slice extracts through to the end of the sequence (arr.length).*/ 
+  // A  new array containing the extracted elements.
+// Requirements:
+  numArray = [1,2,3,4,5];
+  alphaArray = ['a','b','c','d','e'];
+
+
+	function slice(array, begin, end) {
+		
+		result = [];
+
+		if (!begin) {
+		//If begin is undefined, slice begins from index 0.
+		begin = 0;
+		} 
+		if (begin > array.length){
+		//If begin is greater than the length of the sequence, an empty array is returned.	
+		return [];
+		}
+		if (begin < 0){
+		//A negative index can be used, indicating an offset from the end of the sequence.
+		//If start is negative, it is treated as length+start 
+		begin = begin + array.length;
+		}
+		
+		if (begin){
+			begin = begin;
+		}
+		
+
+
+		if (!end || end > array.length) {
+		//If end is omitted, slice extracts through the end of the sequence (arr.length).	
+			end = array.length;
+		}
+		if(end < 0){
+		//A negative index can be used, indicating an offset from the end of the sequence.	
+			end = array.length  + end;
+		}
+
+  
+  	for (var i = begin; i < end ; i++){
+		result.push(array[i]);
+		}
+		return result;
+
+
+
+	}
+
+tests({
+	'It should return an array.':function() {
+		
+		var result = slice(alphaArray,0,2);
+		eq(Array.isArray(result), true);
+	},
+	'It should return a new array, not the original array.':function() {
+		var result = slice(alphaArray,0,5);
+		eq(result !== alphaArray, true);
+	},
+	'It should return a shallow copy of a portion of an array into a new array object selected from begin to end (end not included) where begin and end represent the index of items in that array.':function() {
+		var alphaArray = ['a','b','c','d','e'];
+		var result = slice(alphaArray,0,3);
+		eq(result.length === 3, true);
+		eq(result.length < alphaArray.length, true);
+		eq(Array.isArray(result), true);
+	},
+	'For strings, numbers and booleans (not String, Number and Boolean objects), slice copies the values into the new array.': function () {
+		var stringNumBoo = ['string', 13, true, undefined, null];
+		result = slice(stringNumBoo, 0, 6);
+		eq(result[0], 'string');
+		eq(result[1], 13);
+		eq(result[2], true);
+		eq(result[3], undefined);
+		eq(result[4], null);
+	},
+	'For begin a negative index can be used, indicating an offset from the end of the sequence.': function() {
+		var alphaArray = ['a','b','c','d','e'];
+		var result = slice(alphaArray,-1);
+		eq(result, 'e');
+	},
+	'If begin is less than zero (negative) and begin < array.length, it should start at array.length + begin.': function() {
+		array = [1, 2, 3];
+		result = slice(array, -1);
+		eq(array[2], result[0]);
+		result = slice(array, -2);
+		eq(array[1], result[0]);
+		eq(array[2], result[1]);
+	},
+	 'If begin is a greater than zero but greater than end it should return an empty array.': function() {
+      var returnedArray = slice([1, 2, 3], 2, 1);
+      eq(returnedArray.length, 0);
+	},
+	'If end is positive and < array.length, ending index should be end - 1.': function() {
+		target = [1, 2, 3, 4];
+		result = slice(target, 1, 2);
+		eq(result[0], target[1]);
+		eq(result.length, 1);
+	},
+	'If end is positive and > array.length, ending index should be array.length - 1.': function() {
+		target = [1, 2, 3, 4];
+		result = slice(target, 2, 8);
+		eq(target[2], result[0]);
+		eq(target[3], result[1]);
+	},
+	'If end is negative, ending index should be (array.length - 1) + end.': function() {
+		target = [1, 2, 3, 4];
+		result = slice(target, 2, -1);
+		eq(target[2], result[0]);
+		eq(result.length, 1);
+		result = slice(target, 0, -5);
+		eq(result.length, 0);
+		eq(result[0], undefined);
+	},
+	'slice should work on array-like objects.': function() {
+		
+		function list() {
+			return slice(arguments);
+		}
+		testList = list(1, 2);
+		eq(testList[0], 1);
+		eq(testList[1], 2);
+		eq(testList.length, 2);
+	}
+
+});	
+
+</script>
