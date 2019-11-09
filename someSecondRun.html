@@ -1,0 +1,134 @@
+<script src="../simpletest.js"></script>
+<script type="text/javascript">
+
+// Docs:
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some
+
+// Description:
+  // The some() method tests whether at least one element in the array passes the test implemented by the provided function. It returns a Boolean value. 
+
+// The Steps
+  // 1 write requirements based on docs
+  // 2 write description for test
+  // 3 write test to fail
+  // 4 write code to make the test pass
+  // 5 repeat
+// Function Signature:
+  // rr.some(callback(element[, index[, array]])[, thisArg])
+// Parameters:
+/*
+callback
+A function to test for each element, taking three arguments:
+element
+The current element being processed in the array.
+index Optional
+The index of the current element being processed in the array.
+arrayOptional
+The array some() was called upon.
+thisArgOptional
+A value to use as this when executing callback.
+Return value
+true if the callback function returns a truthy value for at least one element in the array. Otherwise, false.
+
+Description
+The some() method executes the callback function once for each element present in the array until it finds the one where callback returns a truthy value (a value that becomes true when converted to a Boolean). If such an element is found, some() immediately returns true. Otherwise, some() returns false. callback is invoked only for indexes of the array with assigned values. It is not invoked for indexes which have been deleted or which have never been assigned values.
+
+callback is invoked with three arguments: the value of the element, the index of the element, and the Array object being traversed.
+
+If a thisArg parameter is provided to some(), it will be used as the callback's this value. Otherwise, the value undefined will be used as its this value. The this value ultimately observable by callback is determined according to the usual rules for determining the this seen by a function.
+
+some() does not mutate the array on which it is called.
+
+The range of elements processed by some() is set before the first invocation of callback. Elements appended to the array after the call to some() begins will not be visited by callback. If an existing, unvisited element of the array is changed by callback, its value passed to the visiting callback will be the value at the time that some() visits that element's index. Elements that are deleted are not visited.
+*/ 
+
+// Requirements:
+  var numArray = [1,2,3,4,5];
+  var alphaArray = ['a','b','c','d','e'];
+  
+
+	function some(array, callback, optionalThis ){
+     
+    var someCallback = callback;
+
+    if (optionalThis){
+     someCallback = callback.bind(optionalThis);
+     }
+
+
+    for (var i = 0; i < array.length; i++) {
+      if(i in array) {
+      if (someCallback(array[i], i, array)){
+         return true;
+          }
+
+
+        }
+
+  }
+        return false;
+	
+  }
+
+tests({
+	
+   'It should run the callback function array.length times .': function() {
+        var numberOfTimesCallbackHasRun = 0;
+        some ([1,2], function () {
+            numberOfTimesCallbackHasRun++;
+        }); 
+        eq(numberOfTimesCallbackHasRun, 2);
+    },
+  'If callback returns a truthy value. If such an element is found, some() immediately returns true. ': function() {
+    var result = some([1,2,3,4], function(num){
+      if (num < 3) {
+        return true;
+      }
+      eq(result, true);
+    })
+  },
+  'It should pass element as the first argument to the callback': function(){
+    some([1], function(num){
+      eq(num, 1);
+    })
+  },
+  'It should pass index as the second argument to the callback': function(){
+     some([1], function(num, index){
+      
+      eq(index, 0);
+    })
+  },
+  'It should pass array as the third argument to the callback': function(){
+    var theTestArray = [1,2,3];
+    some(theTestArray, function(num, index, array ){
+      eq(array, theTestArray);
+    })
+
+  },
+  'If no element is truthy, return false.': function(){
+    var result = some([1,2,3,4], function(num){
+      
+      return num > 5;  
+      
+      eq(result, false);
+    })
+  },
+  'It should accept an optionalThis': function(){
+    some([1,2,3], function () {
+        eq(this.description, 'this is should be the text from this.description.');
+    }, { description: 'this is should be the text from this.description.'})
+
+
+  },
+  'It should skip holes.': function(){
+    var numberOfTimesCallbackHasRun = 0;
+        some ([,,1,,2,,], function () {
+            numberOfTimesCallbackHasRun++;
+        }); 
+        eq(numberOfTimesCallbackHasRun, 2);
+    }
+
+
+});	
+
+</script>

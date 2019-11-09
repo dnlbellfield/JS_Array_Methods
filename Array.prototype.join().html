@@ -1,0 +1,106 @@
+<script src="../simpletest.js"></script>
+<script type="text/javascript">
+// Docs:
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/join
+// Specs:
+  // https://www.ecma-international.org/ecma-262/6.0/#sec-array.prototype.join
+// Description:
+  // The join() method creates and returns a new string by concatenating all of the elements in an array (or an array-like object), separated by commas or a specified separator string. If the array has only one item, then that item will be returned without using the separator.
+
+  //The string conversions of all array elements are joined into one string.
+
+// The Steps
+  // 1 write requirements based on docs
+  // 2 write description for test
+  // 3 write test to fail
+  // 4 write code to make the test pass
+  // 5 repeat
+// Function Signature:
+  // arr.join([separator])
+// Parameters:
+/*
+separator
+Optional
+Specifies a string to separate each pair of adjacent elements of the array. The separator is converted to a string if necessary. If omitted, the array elements are separated with a comma (","). If separator is an empty string, all elements are joined without any characters in between them.
+
+Return value 
+A string with all array elements joined. If arr.length is 0, the empty string is returned.
+
+*/ 
+
+// Requirements:
+  var numArray = [1,2,3,4,5];
+  var alphaArray = ['a','b','c','d','e'];
+
+
+function join(array, separator){
+	
+	// we're returning a STRING NOT ARRAY DANIEL
+	var result = '';
+
+	
+
+	if (!separator){
+		separator = ",";
+	}
+
+	if (separator){
+		separator = separator.toString();
+	}
+
+
+	if (array.length === 0){
+		return result; 
+	}
+	if (array.length === 1) {
+		return result;
+	}
+
+
+
+	for (var i = 0; i < array.length; i++){
+		 if (array[i] === undefined || array[i] === null) {
+ 		var result = '';
+		 } else {
+		 var result =  result + array[i].toString();
+	} 	
+		if (i < array.length -1) {
+        result += separator;
+      }
+}
+		return result;
+}
+
+tests({
+	'It should return a string.':function() {
+		
+		var result = join(numArray);
+		eq(typeof result, 	"string" );
+	},
+	'If the array has only one item, return only item without using the separator.':function(){
+		var array = ['a'];
+		join(array, (' + '));
+		eq(array[0], 'a');
+	},
+	'It should return a string with all array elements joined even without separator.': function(){
+		var result = join(['eagles','football','NFL']);
+		eq(result, "eagles,football,NFL");
+	},
+	'It should return a string with all array elements joined with separator.': function(){
+		var result = join(['eagles','football','NFL'], ('  +  '));
+		eq(result, "eagles  +  football  +  NFL");
+	},
+
+	'If arr.length is 0, the empty string is returned.': function(){
+		var result = join([]);	
+		eq(result.length, 0);
+	},
+	'If separator is undefined, let sep be the single-element String ","': function() {
+		var result = join([1,2]);
+		eq(result, "1,2");
+	}
+
+
+});	
+
+</script>
