@@ -1,0 +1,111 @@
+<script src="../simpletest.js"></script>
+<script>
+// Docs:
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/shift
+// Specs:
+  // https://tc39.es/ecma262/#sec-array.prototype.shift
+// Description:
+   /*
+The shift method removes the element at the zeroeth index and shifts the values at consecutive indexes down, then returns the removed value. If the length property is 0, undefined is returned.
+
+shift is intentionally generic; this method can be called or applied to objects resembling arrays. Objects which do not contain a length property reflecting the last in a series of consecutive, zero-based numerical properties may not behave in any meaningful manner.
+
+Array.prototype.pop() has similar behavior to shift, but applied to the last element in an array.
+
+  */
+// The Steps
+  // 1 write requirements based on docs
+  // 2 write description for test
+  // 3 write test to fail
+  // 4 write code to make the test pass
+  // 5 repeat
+// Function Signature:
+  // arr.shift()
+// Parameters:
+  
+  // A return value:
+  // The removed element from the array; undefined if the array is empty.
+// Requirements:
+  // It should ...
+
+
+
+
+  function myShift (array){
+
+    if (typeof array !== 'object'){
+      throw new TypeError('need to pass array');
+    }
+    var shift = array[0];
+
+    if (!array.length) {
+      array.length = 0;
+    }
+    if (!Number(array.length)){
+      array.length = 0;
+    }  else {
+    //Determine whether the passed value is an integer.
+    array.length = Number.parseInt(array.length);
+   }
+    if (array.length === 0){
+      return undefined;
+    }
+
+   
+    //array[i] will be reassigned to array[i + 1]
+    // array[0] becomes array[1] because shift deletes the first index, and returns the deleted/ shifted element from the array. 
+    for (var i = 0; i < array.length; i++) {
+      array[i] = array[i + 1];
+    }
+    //subtract 1 from array.length reflecting the removal of the deleted element. 
+    //the array is now one item shorter. that item was shifted out of the array.
+    array.length = array.length - 1;
+    //return the shifted (originally 0 indexed) element
+   return shift;
+  };
+
+
+
+// This is where the tests will go.
+tests({
+  'It should be a type of function.':function(){
+    myShift([]);
+    eq(typeof myShift, "function");
+  },
+  'It should accept an array': function() {
+      var array = [1];
+      myShift(array);
+      eq(Array.isArray(array), true);  
+  },
+    
+  'If the argument passed is not an array TypeError.': function() {
+      
+      try {
+        myShift(true);
+      } catch(error) {
+        result = (error instanceof TypeError);
+      }
+      eq(result, true);
+  },
+    
+  'It should remove the first element of the array.': function() {
+      var testArray = ['a', 'b', 'c'];
+      var result = myShift(testArray);
+      eq(result, 'a');
+      eq(testArray.length, 2);
+      
+  },
+  'It should remove the first element of the array, and return it.':function(){
+    var testArray = ['a', 'b', 'c','d'];
+      var result = myShift(testArray);
+      eq(result, 'a');
+      eq(testArray.length, 3);
+      
+  },
+  'If the array is empty, it should return undefined': function() {
+      var array = [];
+      var removedElement = myShift(array);
+      eq(removedElement, undefined);
+    }
+});
+</script>
