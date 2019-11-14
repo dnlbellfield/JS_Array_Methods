@@ -1,0 +1,80 @@
+<script src="../simpletest.js"></script>
+<script>
+// Docs:
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/pop
+// Specs:
+  //https://tc39.es/ecma262/#sec-array.prototype.pop
+// Description:
+  // The pop() method removes the last element from an array and returns that element. This method changes the length of the array.
+
+  /*
+  The pop method removes the last element from an array and returns that value to the caller.
+
+  pop is intentionally generic; this method can be called or applied to objects resembling arrays. Objects which do not contain a length property reflecting the last in a series of consecutive, zero-based numerical properties may not behave in any meaningful manner.
+
+  If you call pop() on an empty array, it returns undefined.
+
+  Array.prototype.shift() has similar behavior to pop, but applied to the first element in an array. 
+  */
+// The Steps
+  // 1 write requirements based on docs
+  // 2 write description for test
+  // 3 write test to fail
+  // 4 write code to make the test pass
+  // 5 repeat
+// Function Signature:
+  // arr.pop()
+
+
+  function myPop(array){
+
+    if (!array.length) {
+    array.length = 0;
+  }
+  if (!Number(array.length)) {
+    array.length = 0;
+  } else {
+    //Determine whether the passed value is an integer.
+    array.length = Number.parseInt(array.length);
+  }
+  if (array.length < 1){
+    //If you call pop() on an empty array, it returns undefined.
+    return undefined;
+  }
+
+
+    var poppedElement = array[array.length -1];
+
+    delete array[array.length - 1];
+
+    array.length --;
+
+    return poppedElement;
+ }
+   // This is where the tests will go.
+tests({
+  'It should be a type of function.':function(){
+    myPop([]);
+    eq(typeof myPop, "function");
+  },
+  'If you call pop() on an empty array, it returns undefined.': function() {
+    var result  = myPop([]);
+    eq(result, undefined);
+  },
+  'It should return the value that was removed from the end of the array':function() {
+      var result  = myPop([1,2,3]);
+    eq(result, 3);
+  },
+  'The pop method removes the last element from an array.': function() {
+      var testArray = [1,2,3];
+      var result  = myPop(testArray);
+    eq(testArray.length, 2);
+  },
+  'The pop method removes the last element from an array.':function(){
+
+  var myFish = ['angel', 'clown', 'mandarin', 'sturgeon'];
+  var popped = myPop(myFish);
+  eq(popped, 'sturgeon'); 
+  }
+});
+</script>
