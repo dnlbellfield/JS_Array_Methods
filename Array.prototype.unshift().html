@@ -62,5 +62,43 @@ tests({
     myUnshift([]);
     eq(typeof myUnshift, "function");
   },
+ 'It should return the new length.': function () {
+      var array = [1, 2];
+      var result = myUnshift(array, 0);
+      eq(result, 3);
+    },
+    'It should add one element to the front of an array.': function () {
+      var array = [1, 2];
+      myUnshift(array, 0);
+      eq(array[0], 0);
+    },
+    'It adds n elements to array at a given order.': function () {
+      var fish = ['clown'];
+      myUnshift(fish, 'angel', 'sturgeon');
+      eq(fish[0], 'angel');
+      eq(fish[1], 'sturgeon');
+      eq(fish[2], 'clown');
+    },
+    'If there are not elements to add, return the original array.length.': function () {
+      var array = [1];
+      var result = myUnshift(array);
+      eq(result, 1);
+    },
+    'It works for holes.': function () {
+      var array = [,,,];
+      var result = myUnshift(array, undefined);
+      eq(result, 4);
+    },
+    'It can be called or applied to an array-like object.': function () {
+      var object = {
+        length: 3,
+        0: "traveling",
+        1: "rock climbing",
+        2: "sailing"
+      };
+      myUnshift(object, "surfing");
+      eq(object.length, 4);
+      eq(object[0], "surfing");
+    }
 });
 </script>
