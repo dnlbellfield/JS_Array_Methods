@@ -1,0 +1,152 @@
+<script src="../simpletest.js"></script>
+<script>
+// Docs:
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reverse
+// Specs:
+  // link to ecma 
+// Description:
+  // The reverse() method reverses an array in place. The first array element becomes the last, and the last array element becomes the first.
+// The Steps
+  // 1 write requirements based on docs
+  // 2 write description for test
+  // 3 write test to fail
+  // 4 write code to make the test pass
+  // 5 repeat
+// Function Signature:
+  // MDN syntax 
+///* */
+// Syntax
+// a.reverse()
+// Return value
+// The reversed array.
+  function myReverse (array){
+  debugger;
+   var reverseArray = [];
+   //The first array element becomes the last,
+   for (var i = 0; i < array.length; i++) {
+      reverseArray[i] = array[array.length -1 - i];
+   }
+   // and the last array element becomes the first.
+   for (var i = 0; i < reverseArray.length; i++){
+      array[i] = reverseArray[i];
+   }
+
+   return array;
+  };
+// This is where the tests will go.
+tests({
+  'It should be a type of function.':function(){
+    myReverse([]);
+    eq(typeof myReverse, "function");
+  },
+  'It should return an array.': function () {
+      var returnedValue = myReverse([]);
+      eq(Array.isArray(returnedValue), true);
+    },
+    'It should return the array passed into the function, not a copy.': function () {
+      var testArray = [1, 2, 3];
+      var returnedValue = myReverse(testArray);
+      eq(returnedValue, testArray);
+    },
+    'It should reverse values at consecutive numerical indexes less than array.length.': function () {
+      var testArray = [1, 2, 3];
+      myReverse(testArray);
+      eq(testArray[0], 3);
+      eq(testArray[1], 2);
+      eq(testArray[2], 1);
+    },
+    
+    'It should accept non-array objects.': function () {
+      var testObject = {
+        0: 1,
+        1: 2,
+        2: 3,
+        length: 3
+      }
+      myReverse(testObject);
+      eq(testObject[0], 3);
+      eq(testObject[1], 2);
+      eq(testObject[2], 1);
+    },
+    'It should not reverse objects lacking a length property.': function () {
+      var testObject = {
+        0: 1,
+        1: 2,
+        2: 3
+      }
+      myReverse(testObject);
+      eq(testObject[0], 1);
+      eq(testObject[1], 2);
+      eq(testObject[2], 3);
+    },
+    'It should not reverse objects with a non-numeric length value.': function () {
+      var testObject = {
+        0: 1,
+        1: 2,
+        2: 3,
+        length: "I'm not a number"
+      }
+      myReverse(testObject);
+      eq(testObject[0], 1);
+      eq(testObject[1], 2);
+      eq(testObject[2], 3);
+    },
+    'It should not reverse objects with a non-positive length value.': function () {
+      var testObject = {
+        0: 1,
+        1: 2,
+        2: 3,
+        length: -3
+      }
+      myReverse(testObject);
+      eq(testObject[0], 1);
+      eq(testObject[1], 2);
+      eq(testObject[2], 3);
+    },
+    
+    'If called on a Number object, it should return that object unchanged.': function () {
+      var returnedValue = myReverse(new Number);
+      eq(returnedValue instanceof Number, true);
+      eq(returnedValue.valueOf(), 0);
+    },
+    'If called on a Boolean object, it should return that object unchanged.': function () {
+      var returnedValue = myReverse(new Boolean);
+      eq(returnedValue instanceof Boolean, true);
+      eq(returnedValue.valueOf(), false);
+    },
+    'If called on a String object, it should return that object unchanged.': function () {
+      var returnedValue = myReverse(new String);
+      eq(returnedValue instanceof String, true);
+      eq(returnedValue.valueOf(), "");
+    },
+    'If called on a Function object, it should return that object unchanged.': function () {
+      var foo = function () { }
+      var returnedValue = myReverse(foo);
+      eq(returnedValue instanceof Function, true);
+      eq(returnedValue.valueOf(), foo);
+    },
+    
+    'If called on \'null\', it should throw a TypeError.': function () {
+      try {
+        myReverse(null);
+      } catch (e) {
+        var isTypeError = e instanceof TypeError;
+      }
+      eq(isTypeError, true);
+    },
+    'If called on \'undefined\' it should throw a TypeError.': function () {
+      try {
+        myReverse(undefined);
+      } catch (e) {
+        var isTypeError = e instanceof TypeError;
+      }
+      eq(isTypeError, true);
+    },
+    'new thing': function () {
+      
+      var testArray = [1,2,3];
+     result = testArray.reverse();
+     eq(result,"3,2,1");
+    }
+});
+</script>
