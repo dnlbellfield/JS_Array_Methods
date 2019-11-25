@@ -81,8 +81,8 @@ tests({
     },
     'It should fill elements of an array with a static value.': function () {
       var result = myFill([1, 2, 3], 4);
-      result.forEach(function (ele) {
-        eq(ele, 4);
+      result.forEach(function (element) {
+        eq(element, 4);
       });
     },
     'It should accept an optional start index as the third argument.': function () {
