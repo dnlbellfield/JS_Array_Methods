@@ -1,0 +1,159 @@
+<script src="simpletest.js"></script>
+<script>
+  // using johns computer, look for simpletest.js or create it. its on your github
+// Docs:
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/copyWithin
+  // link to ecma 
+// Description:
+  // The copyWithin() method shallow copies part of an array to another location in the same array and returns it without modifying its length.
+// The Steps
+  // 1 write requirements based on docs
+  // 2 write description for test
+  // 3 write test to fail
+  // 4 write code to make the test pass
+  // 5 repeat
+// Function Signature:
+  // MDN syntax 
+///* */
+// Syntax
+// 
+// Parameters
+//target
+//Zero-based index at which to copy the sequence to. If negative, target will be counted from the end.
+//If target is at or greater than arr.length, nothing will be copied. If target is positioned after start, the copied sequence will be trimmed to fit //arr.length.
+
+
+//start Optional
+//Zero-based index at which to start copying elements from. If negative, start will be counted from the end.
+//If start is omitted, copyWithin will copy from index 0. 
+
+
+//end Optional
+//Zero-based index at which to end copying elements from. copyWithin copies up to but not including end. If negative, end will be counted from the end.
+//If end is omitted, copyWithin will copy until the last index (default to arr.length).
+
+//Return value
+//The modified array.
+
+
+function myCopyWithin (array, target, start){
+
+  var length = array.length;
+  var elementsToCopy = [];
+
+  if(!target){
+    target = 0;
+  }
+
+  if (target < 0) {
+    target = target + length; 
+    if ( target < 0){
+      return array;
+    }
+  }
+
+  if (!start){
+    start = 0;
+  }
+
+  if (start < 0){
+    start = start + length; 
+    if (start < 0){
+       return array;
+    }
+  }
+
+
+  //copy elements into new array called elementsToCopy
+  for (var i = 0; i < length; i++){
+    elementsToCopy[i] = array[i];
+  }
+
+  for (var i = 0; i < length - target - start; i ++){
+    array[i + target] = elementsToCopy[i + start];
+  }
+
+  return array;
+};
+// This is where the tests will go.
+tests({
+  'It should return the array':function() {
+  var originalArray =[1,2,3];
+
+  var returnedArray = myCopyWithin(originalArray,0);
+  eq (originalArray, returnedArray);
+  },
+
+  '[1].copyWithin(0) ==> [1];':function(){
+  var myArray = [1];
+  var copyResult = myCopyWithin(myArray,0);
+  eq(copyResult[0], 1);
+  },
+  '[1,2].copyWithin(-1) ==> [1,1];':function(){
+
+   var originalArray = [1,2];
+   var copyResult = myCopyWithin(originalArray, -1);
+   eq(copyResult[0], 1); 
+   eq(copyResult[1], 1);  
+  },
+
+  '[1,2].copyWithin(0) ==> [1,2];':function(){
+   var myArray = [1,2];
+   var copyResult = myCopyWithin(myArray,0);
+   eq(copyResult[0], 1); 
+   eq(copyResult[1], 2);  
+  },
+  '[1,2].copyWithin(1) ==> [1,1];':function(){
+  
+  var copyResult = myCopyWithin([1,2], 1);
+  eq(copyResult[0], 1); 
+  eq(copyResult[1], 1);  
+
+  },
+  '[1,2].copyWithin(2) ==> [1,2];':function(){
+  //used debugger. nothing copied due to target being same as array length
+  var originalArray = [1,2];
+  var copyResult = myCopyWithin(originalArray, 2);
+  eq(copyResult[0], 1); 
+  eq(copyResult[1], 2);  
+  },
+  '[1,2].copyWithin(-99) ==> [1,2];':function(){
+  var originalArray = [1,2];
+  var copyResult = myCopyWithin(originalArray, -99);
+  eq(copyResult[0], 1); 
+  eq(copyResult[1], 2);  
+  },
+  '[1,2].copyWithin(0,0) ==>  [1,2]':function(){
+  var originalArray = [1,2];
+  var copyResult = myCopyWithin(originalArray,0,0);
+  eq(copyResult[0], 1); 
+  eq(copyResult[1], 2); 
+ 
+  },
+  '[1,2].copyWithin(0,1) ==>  [2,2]':function(){ 
+  var originalArray = [1,2];
+  var copyResult = myCopyWithin(originalArray,0,1);
+  eq(copyResult[0], 2); 
+  eq(copyResult[1], 2);  
+  },
+  '[1,2].copyWithin(0,2) ==>  [1,2]':function(){
+  var originalArray = [1,2];
+  var copyResult = myCopyWithin(originalArray,0,2);
+  eq(copyResult[0], 1); 
+  eq(copyResult[1], 2);
+  },
+  '[1,2].copyWithin(0,-1) ==>  [2,2]':function(){
+  var originalArray = [1,2];
+  var copyResult = myCopyWithin(originalArray,0,-1);
+  eq(copyResult[0], 2); 
+  eq(copyResult[1], 2);
+  },
+  '[1,2].copyWithin(0,-3) ==>  [1,2]':function(){
+  var originalArray = [1,2];
+  var copyResult = myCopyWithin(originalArray,0,-3);
+  eq(copyResult[0], 1); 
+  eq(copyResult[1], 2);
+  }
+
+});
+</script>
