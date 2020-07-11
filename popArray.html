@@ -1,0 +1,48 @@
+<script src="simpletest.js"></script>
+<script>
+
+function myPop(array) {
+
+  if (Array.isArray(array) === false) {
+    throw new TypeError('only accepts an array');
+  }
+
+
+  if (array[array.length-1]) {
+    var lastIndexToBeDeleted = array[array.length - 1];
+    delete array[array.length - 1];
+    array.length --;
+    return lastIndexToBeDeleted;
+  } else {
+    
+    return undefined;
+  
+  }
+  
+  
+}
+
+tests({
+
+
+'It should return the deleted element from the array.': function() {
+  var testArray = [1,2,3];
+  var result  = myPop(testArray);
+  eq(result, 3);
+  
+},
+'It should return undefined if called with an empty array.': function() {
+  var pop = myPop([]);
+  eq(pop, undefined);
+  
+},
+'The pop method removes the last element from an array.': function() {
+  // original length is 3
+  var testArray = [1,2,3];
+  var result  = myPop(testArray);
+  eq(testArray.length, 2);
+  
+  },
+
+});
+</script>
