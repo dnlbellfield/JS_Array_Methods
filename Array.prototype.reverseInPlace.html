@@ -1,0 +1,66 @@
+<script src="simpletest.js"></script>
+<script>
+
+
+function reverse(arr) {
+  function swap(array, front, back) {
+    let temp = arr[front];
+     arr[front] = arr[back];
+     arr[back]= temp;
+  }
+
+  if( !Array.isArray(arr)){
+    throw new TypeError('must pass array');
+  }
+
+  let front = 0;
+  let back = arr.length - 1;
+  while (front < back) {
+    swap(arr, front, back);
+    front++;
+    back--;
+  }
+  return arr;
+}
+
+tests({
+
+
+'It should only accept an array as an argument.': function() {
+  var testString = '1,2,3';
+  
+  try {
+    reverse(testString);
+  } catch (error) {
+    var isTypeError = error;
+    eq(isTypeError instanceof TypeError, true);
+  }
+  
+  
+  
+},
+'It should return an array.': function() {
+  var rev = reverse([]);
+  eq(Array.isArray(rev), true);
+},
+'It should return the original array.': function() {
+  var arrayOneTwoThree = [1,2,3];
+  var reversedArray = reverse(arrayOneTwoThree);
+  eq(reversedArray,arrayOneTwoThree);
+},
+'It should make sure the first array element becomes the last': function() {
+  var arrayOneTwoThree = [1,2,3];
+  var reversedArray = reverse(arrayOneTwoThree);
+
+  eq(reversedArray[2], 1);
+},
+'It should reverse the array.': function() {
+  // original length is 3
+  var testArray = [1,2,3];
+  var result  = reverse(testArray);
+  eq(result[2],[1]);
+  eq(result[1],[2]);
+  eq(result[0],[3]);
+}
+});
+</script>
