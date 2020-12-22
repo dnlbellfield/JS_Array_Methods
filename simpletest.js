@@ -15,11 +15,20 @@
  *   adder-test.html (tests - just open a browser to see results)
  *
  *     <script src="tinytest.js"></script>
+ *     <script src="adder.js"></script>
  *     <script>
  *
  *     tests({
- *       '': function() {},
- *       '': function() {},
+ *
+ *       'adds numbers': function() {
+ *         eq(6, add(2, 4));
+ *         eq(6.6, add(2.6, 4));
+ *       },
+ *
+ *       'subtracts numbers': function() {
+ *         eq(-2, add(2, -4));
+ *       },
+ *
  *     });
  *     </script>
  *
@@ -28,22 +37,6 @@
  * -Joe Walnes
  * MIT License. See https://github.com/joewalnes/jstinytest/
  */
-
-var TinyTestHelper = {
-    renderStats: function (tests, failures) {
-        var numberOfTests = Object.keys(tests).length;
-                var successes = numberOfTests - failures;
-                var summaryString = 'Ran ' + numberOfTests + ' tests: '
-                                    + successes + ' successes, ' 
-                                    + failures + ' failures';
-
-                var summaryElement = document.createElement('h1');
-                summaryElement.textContent = summaryString;
-                document.body.appendChild(summaryElement);                 
-
-    }
-};
-
 var TinyTest = {
 
     run: function(tests) {
@@ -52,22 +45,16 @@ var TinyTest = {
             var testAction = tests[testName];
             try {
                 testAction.apply(this);
-                console.log('%c' + testName , "color: green;");
-
+                console.log('Test:', testName, 'OK');
             } catch (e) {
                 failures++;
-                
-            
-                console.groupCollapsed('%c' + testName , "color: red;");
+                console.error('Test:', testName, 'FAILED', e);
                 console.error(e.stack);
-                console.groupEnd();
             }
         }
         setTimeout(function() { // Give document a chance to complete
             if (window.document && document.body) {
                 document.body.style.backgroundColor = (failures == 0 ? '#99ff99' : '#ff9999');
-                
-                TinyTestHelper.renderStats(tests, failures);
             }
         }, 0);
     },

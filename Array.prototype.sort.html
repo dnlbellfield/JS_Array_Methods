@@ -1,0 +1,232 @@
+<script src="/Users/johnbellfield/Documents/Coding Files/Testing_December2020/sort/simpletest.js"></script>
+<script>
+
+/* 
+array.prototype.sort
+arr.sort([optional compareFunction]);
+*/
+
+function sorter(arr){
+  for(var i = 0;i < arr.length; i++){
+    //On first iteration j will be the 2nd element in the array, j is (i + 1) i being the first index/element in array
+    for(var j = i + 1; j < arr.length; j++){
+      if(arr[i] > arr[j]){
+        var swap = arr[i];
+        arr[i] = arr[j];
+        arr[j] = swap;
+      }
+    }
+  }
+  return arr;
+}
+
+function sort(array, optionalCompareFunction) {
+  var temporaryArrayForNumbers = [];
+  var temporaryArrayForStrings = [];
+  var temporaryArrayForUndefined = [];
+  var amountOfPrimitiveNumbers = 0;
+  var amountOfUndefinedValues = 0;
+  
+  if(!optionalCompareFunction) {
+    // if theres no compareFunction provided to our sort function then convert the elements in the array to strings with .toString()
+    // then compare the values of the strings by calling sorter function and passing the array as the argument
+    if (!Array.isArray(array)) {
+      throw new TypeError('Must pass array as the first argument');
+    } else {
+      for(var i = 0; i < array.length; i++){
+      
+        if (typeof array[i] === "undefined"){
+          amountOfUndefinedValues++; 
+        } else if (typeof array[i] !== 'number') {
+          temporaryArrayForStrings.push(array[i].toString());
+        } else {
+          amountOfPrimitiveNumbers++;
+          temporaryArrayForNumbers.push(array[i].toString());
+        }
+      //numbers will be sorted as strings -- they will need to be changed back into primitive numbers
+      var numbersAsStringsToBePushedToArray = sorter(temporaryArrayForNumbers); 
+      var stringsToBePushedToArray = sorter(temporaryArrayForStrings);
+      // primative numbers are sorted by 1 ,200, 77
+    }
+
+        for(var i = 0; i < numbersAsStringsToBePushedToArray.length; i++){
+          numbersAsStringsToBePushedToArray[i] = parseInt(numbersAsStringsToBePushedToArray[i]);
+        }
+        if (stringsToBePushedToArray.length > 0) {
+          var concatArray = numbersAsStringsToBePushedToArray.concat(stringsToBePushedToArray);
+        } else {
+          var concatArray = numbersAsStringsToBePushedToArray;
+        }
+        // change length of array
+        array.length = array.length - amountOfUndefinedValues;
+        for(var i = 0; i < array.length; i++){
+          array[i] = concatArray[i];
+        }
+        array.length = array.length + amountOfUndefinedValues;
+        return array;
+    }
+
+  } else {
+   
+    if (Array.isArray(array)) {
+      for(var i = 0;i < array.length; i++){
+        //On first iteration j will be the 2nd element in the array, j is (i + 1) i being the first index/element in array
+        for(var j = i + 1; j < array.length; j++){
+          if(optionalCompareFunction(array[i],array[j]) > 0){
+            var swap = array[i];
+            array[i] = array[j];
+            array[j] = swap;
+            // console.log(array);
+          } 
+        }
+      }
+        return array;
+
+    } else {
+      throw new TypeError('Must pass array as the first argument');
+    }
+  }
+
+}
+
+tests({
+
+  'It should run the compare function function if supplied .': function() {
+    var numberOfTimesCallbackHasRun = 0;
+    sort ([1,2], function(a, b) {
+      numberOfTimesCallbackHasRun++;
+      return a - b;
+    }); 
+    eq(numberOfTimesCallbackHasRun === 1,true );
+    },
+
+  'It should pass the ith element of the array as the first argument to the callback.': function() {
+    sort([99,1], function (a,b) { 
+      eq(99,a);
+    }); 
+  },
+  'It should pass  the (ith element + 1) of the array as the second argument to the callback.': function() {
+    sort([99,1], function (a,b) { 
+      eq(1,b);
+    }); 
+  },
+  'It should sort a stringArray without a compare function provided.': function() {
+    var stringArray = ['Blue', 'Humpback', 'Beluga'];
+    var result = sort(stringArray);
+    eq(result[0], "Beluga");
+    eq(result[1], "Blue");
+    eq(result[2], "Humpback");
+  },
+  'It should sort a numericStringArray without a compare function provided.': function() {
+    var numericStringArray = ['80', '9', '700']; 
+    var result = sort(numericStringArray);
+    eq(result[0],700);
+    eq(result[1],80);
+    eq(result[2],9);
+  },
+  'It should sort a numberArray without a compare function provided.': function() {
+    var numberArray = [40, 1, 5, 200];
+    var result = sort(numberArray);
+    eq(result[0],1);
+    eq(result[1],200);
+    eq(result[2],40);
+    eq(result[3],5);
+  },
+  'It should sort a mixedNumericArray without a compare function provided.': function() {
+    var mixedNumericArray = ['80', '9', '700', 40, 1, 5, 200];
+    var result = sort(mixedNumericArray);
+    eq(result[0],1);
+    eq(result[1],200);
+    eq(result[2],40);
+    eq(result[3],5);
+    eq(result[4],700);
+    eq(result[5],80);
+    eq(result[6],9);
+  },
+  'It should sort with a compare function provided.': function() {
+    var numbers = [4, 2, 5, 1, 3];
+    var result = numbers.sort(function(a, b) {
+      return a - b;
+    });
+    eq(result[0],1); 
+    eq(result[1],2); 
+    eq(result[2],3);
+    eq(result[3],4);
+    eq(result[4],5);
+  },
+  'It should sort a numericStringArray with a compare function provided.': function() {
+    function compareNumbers(a, b) {
+      return a - b;
+    }
+    var numericStringArray = ['80', '9', '700']; 
+    var result = sort(numericStringArray,compareNumbers);
+    eq(result[0],9);
+    eq(result[1],80);
+    eq(result[2],700);
+  },
+  'It should sort a numberArray with a compare function provided.': function() {
+    function compareNumbers(a, b) {
+      return a - b;
+    }
+    var numberArray = [40, 1, 5, 200];
+    var result = sort(numberArray, compareNumbers);
+    eq(result[0],1);
+    eq(result[1],5);
+    eq(result[2],40);
+    eq(result[3],200);
+  },
+  'It should sort a mixedNumericArray with a compare function provided.': function() {
+    function compareNumbers(a, b) {
+      return a - b;
+    }
+    var mixedNumericArray = ['80', '9', '700', 40, 1, 5, 200];
+    var result = sort(mixedNumericArray, compareNumbers);
+    eq(result[0],1);
+    eq(result[1],5);
+    eq(result[2],9);
+    eq(result[3],40);
+    eq(result[4],80);
+    eq(result[5],200);
+    eq(result[6],700);
+
+  },
+
+  'It should throw an error if the first argument is not an array.': function() {
+    try {
+      sort('three');
+    } catch (error) {
+      eq( error instanceof TypeError, true)
+    }
+  },
+  'It should allow Objects to be sorted, given the value of one of their properties.': function () {
+    var items = [
+      { name: 'Edward', value: 21 },
+      { name: 'Sharpe', value: 37 },
+      { name: 'And', value: 45 },
+      { name: 'The', value: -12 },
+      { name: 'Magnetic', value: 13 },
+      { name: 'Zeros', value: 37 }
+    ];
+    // sort by value
+    var result = sort(items, function (a, b) {
+      return a.value - b.value;
+    });
+
+    eq(result[0].name, "The");
+    eq(result[1].name, 'Magnetic');
+    eq(result[2].name, 'Edward');
+    eq(result[3].name, 'Sharpe');
+    eq(result[4].name, 'Zeros');
+    eq(result[5].name, 'And');
+    eq(result[0].value, -12);
+    eq(result[1].value, 13);
+    eq(result[2].value, 21);
+    eq(result[3].value, 37);
+    eq(result[4].value, 37);
+    eq(result[5].value, 45);
+    console.log(result);
+  }
+
+
+});
+</script>
