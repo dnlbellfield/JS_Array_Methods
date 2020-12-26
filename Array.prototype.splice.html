@@ -130,12 +130,9 @@ function splice(array, start, deleteCount, additionalItemsForArray) {
     array.length = temporaryArrayForDefinedItems.length;
       return deletedItemsArray;
     } else {
-      // loop over start length --then-- newTempArrayBeforeStart[i] = array[items before start]
-      // loop over deleteCOunt length --then-- newTempArrayAfterStart[i] = array[deleteCount - array.length]
-      // insert your itemsargumentsArray
-      // ßconcat newTempArrayBeforeStart and argumentsArray and newTempArrayAfterStart as array this will include 
-      // the array, added items, and the end of the original array
-      // console.log('perform insertion of new items');
+      
+      // collect additionalItemsForArray into an array. create array of items before start. create array of items after start. 
+      // combine before, additionalItemsForArray, and after arrays to create the final version of array 
       for(var i = 0; i < start; i++){
         arrayBeforeStart[i] = array[i];
       }
@@ -151,8 +148,7 @@ function splice(array, start, deleteCount, additionalItemsForArray) {
       for(var i = 0; i < argumentsArray.length; i++){
       array[start + i] = argumentsArray[i];
       } 
-      // array.concat(argumentsArray);
-      // array.concat(arrayAfterStart);
+     
       for(var i = 0; i < arrayAfterStart.length; i++){
       if (i in array) {
         array[start + argumentsArray.length + i] = arrayAfterStart[i];
