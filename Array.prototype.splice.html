@@ -1,0 +1,313 @@
+<script src="/Users/johnbellfield/Documents/Coding Files/Testing_December2020/Array.prototype.splice/simpletest.js"></script>
+<script>
+
+/* 
+Array.prototype.splice()
+
+The splice() method changes the contents of an array
+by removing or replacing existing elements
+and/or adding new elements in place.
+
+syntax: let arrDeletedItems = array.splice(start[, deleteCount[, item1[, item2[, ...]]]])
+
+arguments: array, start, [deleteCount], [The elements to add to the array] 
+
+*/
+
+function splice(array, start, deleteCount, additionalItemsForArray) {
+  var deletedItemsArray = [];
+  var temporaryArrayForDefinedItems = [];
+  var argumentsArray = [];
+  var arrayBeforeStart = []; 
+  var arrayAfterStart = [];
+  var lengthOfArray = array.length;
+  
+  if(!Array.isArray(array)) {
+    throw new TypeError('First argument must be an array.');
+  }
+  if (typeof start !== 'number') {
+    throw new TypeError('start must be a number.');
+  }
+  
+
+  if(start > array.length) {
+    start =  array.length;
+  } else if ( start < 0) {
+    start = array.length + start;
+    if (start < 0) {
+      start = 0;
+    }
+  } else {
+    start = start;
+  }
+  if(deleteCount === undefined) {
+    deleteCount = array.length - start;
+    for(var i = 0; i < start; i++){
+      arrayBeforeStart[i] = array[i];
+    }
+    for(var i = 0; i < deleteCount; i++) {
+      deletedItemsArray.push(array[start +i]);
+        delete array[start + i];
+    }  
+    for(var i = 0; i < start; i++){
+        array[i] = arrayBeforeStart[i];
+      }
+      array.length = arrayBeforeStart.length;
+      return deletedItemsArray;
+  } else {
+    deleteCount = deleteCount;
+  }
+  if (typeof deleteCount !== 'number') {
+    throw new TypeError('deleteCount must be a number.');
+  }  
+  if(deleteCount <= 0) {
+    // nothing to remove. check to see if we need to add additional items
+    for(var i = 0; i < arguments.length - 3; i++) {
+        argumentsArray[i] = arguments[3 + i];
+      //  console.log('argumentsArray',argumentsArray);
+      }
+      
+    if (!additionalItemsForArray) {
+      return deletedItemsArray;
+    } else {
+      // since we are not deleting and there are additionalItemsForArray we add the items
+      // collect additionalItemsForArray into an array. create array of items before start. create array of items after start. 
+      // combine before, additionalItemsForArray, and after arrays to create the final version of array 
+      if(array.length === 0){
+        for(var i = 0; i < argumentsArray.length; i++){
+          array[i] = argumentsArray[i];
+        } 
+      } else {
+      for(var i = 0; i < start; i++){
+        arrayBeforeStart[i] = array[i];
+      }
+      
+      for(var i = 0; i < deleteCount + start; i++){
+        arrayAfterStart[i] = array[deleteCount + start + i];
+      }
+      
+      for(var i = 0; i < argumentsArray.length; i++){
+      array[start + i] = argumentsArray[i];
+      } 
+      for(var i = 0; i < arrayAfterStart.length; i++){
+      if (i in array) {
+        array[start + argumentsArray.length + i] = arrayAfterStart[i];
+      }
+    } 
+
+      return deletedItemsArray;
+      }
+    }
+  } else { // delete count > 0
+    // start deleting based on count
+    // check if we need to add items to array depending on  additionalItemsForArray length (arguments[3].length?)
+    if(array.length < deleteCount){
+      for(var i = 0; i < argumentsArray.length; i++){
+      array[i] = argumentsArray[i];
+      } 
+      return deletedItemsArray;
+    } else {
+      for(var i = 0; i < arguments.length - 3; i++) {
+        argumentsArray[i] = arguments[3 + i];
+      //  console.log('argumentsArray',argumentsArray);
+      }
+
+    for(var i = 0; i < deleteCount; i++) {
+      deletedItemsArray.push(array[start +i]);
+        delete array[start + i];
+    }
+
+
+    if (!additionalItemsForArray) {
+      for(var i = 0; i < array.length; i++){
+      if (i in array) {
+        temporaryArrayForDefinedItems.push(array[i]);
+      }
+    } 
+    for(var i = 0; i < temporaryArrayForDefinedItems.length; i++){
+      array[i] = temporaryArrayForDefinedItems[i];
+    } 
+    array.length = temporaryArrayForDefinedItems.length;
+      return deletedItemsArray;
+    } else {
+      // loop over start length --then-- newTempArrayBeforeStart[i] = array[items before start]
+      // loop over deleteCOunt length --then-- newTempArrayAfterStart[i] = array[deleteCount - array.length]
+      // insert your itemsargumentsArray
+      // ßconcat newTempArrayBeforeStart and argumentsArray and newTempArrayAfterStart as array this will include 
+      // the array, added items, and the end of the original array
+      // console.log('perform insertion of new items');
+      for(var i = 0; i < start; i++){
+        arrayBeforeStart[i] = array[i];
+      }
+      
+      for(var i = 0; i < deleteCount + start; i++){
+        arrayAfterStart[i] = array[deleteCount + start + i];
+      }
+     
+      for(var i = 0; i < arguments.length - 3; i++) {
+        argumentsArray[i] = arguments[3 + i];
+      //  console.log('argumentsArray',argumentsArray);
+      }
+      for(var i = 0; i < argumentsArray.length; i++){
+      array[start + i] = argumentsArray[i];
+      } 
+      // array.concat(argumentsArray);
+      // array.concat(arrayAfterStart);
+      for(var i = 0; i < arrayAfterStart.length; i++){
+      if (i in array) {
+        array[start + argumentsArray.length + i] = arrayAfterStart[i];
+      }
+    } 
+
+      return deletedItemsArray;
+    }
+  }
+  
+}
+}
+
+tests({
+
+  'It should throw an error if an Array is not passed as the first argument.': function() {
+    try {
+      splice(2);
+    } catch (error) {
+      eq( error.name === 'TypeError', true);
+      eq( error.message, 'First argument must be an array.');
+    }
+  },
+  'It should throw an error if a number is not passed as the start argument.': function() {
+    try {
+      splice([],'apple');
+    } catch (error) {
+      eq( error.name === 'TypeError', true);
+      eq( error.message, 'start must be a number.');
+    };
+  },
+  'It should throw an error if a number is not passed as the deleteCount argument.': function() {
+    try {
+      splice([],0,{});
+    } catch (error) {
+      eq( error.name === 'TypeError', true);
+      eq( error.message, 'deleteCount must be a number.');
+    };
+  },
+  'It should set start to the length of the array if start is greater than the length of the array.': function() {
+    var array = [];
+    splice(array, 2,0,'added', 'another item added');
+    eq(array[0],'added');
+    eq(array[1],'another item added');
+  },
+  'It should return an empty array if no elements are removed.': function() {
+    var results = splice([1,2,3],0,0);
+    eq(results[0], undefined);
+    eq(results.length === 0, true);
+  },
+  'It should add additional elements to the array if deleteCount is 0 or negative and the fourth argument(additionalItemsForArray) is supplied.': function() {
+    var array = [];
+    splice(array, 0,0,'added', 'another item added');
+    eq(array[0],'added');
+    eq(array[1],'another item added');
+  },
+  'It should return an array containing the removed items from start.': function() {
+    var array = ['a','b','c'];
+    var results = splice(array,0,1);
+    eq(results[0],'a');
+  },
+  'It should change the length of the array if items are removed from the array.': function() {
+    var array = ['a','b','c'];
+    var results = splice(array,0,1);
+    eq(results[0],'a');
+    eq(array[0],'b');
+    eq(array.length, 2);
+  },
+  'It should should pass mdn example: remove 0 (zero) elements before index 2, and insert \'drum\'.': function() {
+    let myFish = ['angel', 'clown', 'mandarin', 'sturgeon'];
+    let removed = splice(myFish, 2, 0, 'drum');
+    eq(removed.length,0);
+    eq(myFish[0],'angel');
+    eq(myFish[1],'clown');
+    eq(myFish[2],'drum');
+    eq(myFish[3],'mandarin');
+    eq(myFish[4],'sturgeon');
+    
+
+  },
+  'It should pass mdn example: remove 0 (zero) elements before index 2, and insert drum and guitar. ': function() {
+    let myFish = ['angel', 'clown', 'mandarin', 'sturgeon'];
+    let removed = splice(myFish,2, 0, 'drum', 'guitar');
+    eq(removed.length,0);
+    eq(myFish[0],'angel');
+    eq(myFish[1],'clown');
+    eq(myFish[2],'drum');
+    eq(myFish[3],'guitar');
+    eq(myFish[4],'mandarin');
+    eq(myFish[5],'sturgeon');
+ 
+  },
+  'It should pass mdn example: remove 1 element at index 3. ': function() {
+    let myFish = ['angel', 'clown', 'drum', 'mandarin', 'sturgeon']
+    let removed = splice(myFish,3, 1);
+    eq(removed.length,1);
+    eq(removed[0], 'mandarin');
+    eq(myFish[0],'angel');
+    eq(myFish[1],'clown');
+    eq(myFish[2],'drum');
+    eq(myFish[3],'sturgeon');
+  },
+  'It should pass mdn example: remove 1 element at index 2, and insert \"trumpet\"\. ': function() {
+    let myFish = ['angel', 'clown', 'drum', 'sturgeon'];
+    let removed = splice(myFish,2, 1, 'trumpet');
+    eq(removed.length,1);
+    eq(removed[0], 'drum');
+    eq(myFish[0],'angel');
+    eq(myFish[1],'clown');
+    eq(myFish[2],'trumpet');
+    eq(myFish[3],'sturgeon');
+  },
+  "It should pass mdn example: remove 2 elements from index 0, and insert \"parrot\", \"anemone\" and \"blue\".": function() {
+    let myFish = ['angel', 'clown', 'trumpet', 'sturgeon'];
+    let removed = splice(myFish, 0, 2, 'parrot', 'anemone', 'blue');
+    eq(removed.length,2);
+    eq(removed[0], 'angel');
+    eq(removed[1],'clown');
+    eq(myFish[0],'parrot');
+    eq(myFish[1],'anemone');
+    eq(myFish[2], 'blue');
+    eq(myFish[3],'trumpet');
+    eq(myFish[4],'sturgeon');
+  },
+  "It should pass mdn example: remove 2 elements from index 2.": function() {
+    let myFish = ['parrot', 'anemone', 'blue', 'trumpet', 'sturgeon'];
+    let removed = splice(myFish,2, 2);
+    eq(removed.length,2);
+    eq(removed[0], 'blue');
+    eq(removed[1],'trumpet');
+    eq(myFish[0],'parrot');
+    eq(myFish[1],'anemone');
+    eq(myFish[2],'sturgeon');
+  },
+  "It should pass mdn example: remove 1 element from index -2.": function() {
+    let myFish = ['angel', 'clown', 'mandarin', 'sturgeon'];
+    let removed = splice(myFish,-2, 1);
+    eq(removed.length,1);
+    eq(removed[0], 'mandarin');
+    eq(myFish[0],'angel');
+    eq(myFish[1],'clown');
+    eq(myFish[2],'sturgeon');
+  },
+  'It should pass mdn example: remove all elements from index 2.': function() {
+    let myFish = ['angel', 'clown', 'mandarin', 'sturgeon'];
+    let removed = splice(myFish,2);
+    eq(removed.length,2);
+    eq(myFish.length, 2);
+    eq(removed[0], 'mandarin');
+    eq(removed[1], 'sturgeon');
+    eq(myFish[0],'angel');
+    eq(myFish[1],'clown');
+  }
+
+
+
+});
+</script>
